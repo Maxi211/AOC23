@@ -10,7 +10,6 @@
 # end
 
 def neighbor_gears(line_index, char_index, length, signs_positions, number)
-
   neighbor_positions = []
   (line_index-1..line_index+1).each do |li|
     (char_index-(length+1)..char_index).each do |ci|
@@ -76,7 +75,6 @@ data.each.with_index do |line, line_index|
   end
 end
 
-
 sum = @gear_positions.sum do |position, numbers|
   if numbers.length > 1
     product = numbers[0]
@@ -88,4 +86,5 @@ sum = @gear_positions.sum do |position, numbers|
     0
   end
 end
+
 puts sum
