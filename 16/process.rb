@@ -1,14 +1,11 @@
 data = File.readlines('input.txt', chomp: true)
 # data = File.readlines('test.txt',chomp: true)
 
-
 def one_beam(start_coordinates, direction)
+
   current_pos = [start_coordinates[0]+direction[0],start_coordinates[1]+direction[1]]
 
-  return  if current_pos.min < 0
-  return  if current_pos[0] > @x_max
-  return  if current_pos[1] > @y_max     
-  return  if @lighted_points[current_pos].include?(direction)
+  return  if current_pos.min < 0 || current_pos[0] > @x_max || current_pos[1] > @y_max || @lighted_points[current_pos].include?(direction)
   
   up = direction == [0,-1]
   down = direction == [0,1]
@@ -49,10 +46,7 @@ def one_beam(start_coordinates, direction)
       return "ERROR"
     end
     current_pos = [current_pos[0]+direction[0],current_pos[1]+direction[1]]
-    return  if @lighted_points[current_pos].include?(direction)
-    return  if current_pos.min <0
-    return  if current_pos[0] > @x_max
-    return  if current_pos[1] > @y_max      
+    return  if current_pos.min < 0 || current_pos[0] > @x_max || current_pos[1] > @y_max || @lighted_points[current_pos].include?(direction)  
   end
 end
 
@@ -68,15 +62,41 @@ data.each.with_index do |line,index|
   end
 end
 
+@grid.freeze
+sizes = []
+
 @lighted_points = Hash.new([])
-
-
-
-
-
 one_beam([-1,0],[1,0])
+puts "First Part: #{@lighted_points.size}"
 
-puts @lighted_points.size
+# from left
+[-1].product((0..@y_max).to_a).product([[1,0]]).each do |start|
+  @lighted_points = Hash.new([])
+  one_beam(*start)
+  sizes << @lighted_points.size
+end
+#from right
+[@x_max+1].product((0..@y_max).to_a).product([[-1,0]]).each do |start|
+  @lighted_points = Hash.new([])
+  one_beam(*start)
+  sizes << @lighted_points.size
+end
+#from top
+(0..@x_max).to_a.product([-1]).product([[0,1]]).each do |start|
+  @lighted_points = Hash.new([])
+  one_beam(*start)
+  sizes << @lighted_points.size
+end
+#from bottom
+(0..@x_max).to_a.product([@y_max+1]).product([[0,-1]]).each do |start|
+  @lighted_points = Hash.new([])
+  one_beam(*start)
+  sizes << @lighted_points.size
+end
+
+puts "First Part: #{sizes.max}"
+
+
 
 # data.each.with_index do |line, index|
 #   puts ""
@@ -86,6 +106,5 @@ puts @lighted_points.size
 #     else
 #       print char
 #     end
-
 #   end
 # end
